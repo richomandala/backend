@@ -5,12 +5,16 @@ module.exports = function (app) {
 
     // routes siswa
     const siswa = require('./controller/siswa');
-    app.route('/siswa/findall')
+    app.route('/siswa')
         .get(siswa.findall);
-    app.route('/siswa/find/:id')
+    app.route('/siswa/:id')
         .get(siswa.find);
     app.route('/siswa')
         .post(siswa.store);
+    app.route('/siswa/:id')
+        .put(siswa.update);
+    app.route('/siswa/:id')
+        .delete(siswa.destroy);
 
     app.route('/')
         .get(jsonku.index);

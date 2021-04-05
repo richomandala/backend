@@ -30,7 +30,7 @@ exports.findall = function (req, res) {
     );
 };
 
-//menampilkan semua data siswa berdasarkan id
+//menampilkan data siswa berdasarkan id
 exports.find = function (req, res) {
     let id = req.params.id;
     sql(`
@@ -43,51 +43,99 @@ exports.find = function (req, res) {
     );
 };
 
-//menambahkan data mahasiswa
+//menambahkan data siswa
 exports.store = function (req, res) {
-    const data = {
-
+    const body = req.body;
+    
+    // create users for student
+    const user = require('./user');
+    const dataUser = {
+        username: body.username,
+        email: body.email,
+        password: body.password,
+        role_id: 3 // 3 untuk siswa
     };
+    
+    // buat user
+    user.store(dataUser, function(result) {
+        console.log(result);
+        // jika gagal tampil pesan error
+        if (result.error) {
+            response.ok({
+                error: true,
+                message: result.message
+            })
+        // jika berhasil tambah data siswa
+        } else {
+            const data = {
+                nisn: body.nisn,
+                nis: body.nis,
+                name: body.name,
+                gender: body.gender,
+                birthplace: body.birthplace,
+                birthdate: body.birthdate,
+                user_id: result.id,
+                class_id: body.class_id
+            };
 
-    connection.query('INSERT INTO users (nis,nama,password,id_level) VALUES(?,?,?,?)',
-        [nis, nama, password, id_level],
-        function (error, rows, fields) {
-            if (error) {
-                console.log(error);
-            } else {
-                response.ok("Berhasil Menambahkan Data!", res)
-            }
-        });
+            sql(
+                `INSERT INTO students 
+                (nisn, nis, name, gender, birthplace, birthdate, user_id, class_id) 
+                VALUES(?,?,?,?,?,?,?,?)`,
+                res,
+                [data.nisn, data.nis, data.name, data.gender, data.birthplace, data.birthdate, data.user_id, data.class_id],
+            );
+        }
+    });
 };
 
+//mengubah data siswa
+exports.update = function (req, res) {
+    const id = req.params.id
+    const body = req.body;
 
-// //mengubah data berdasarkan id
-// exports.ubahUsers = function (req, res) {
-//     var id = req.body.id;
-//     var nis = req.body.nis;
-//     var nama = req.body.nama;
-//     var password = req.body.password;
-//     var id_level= req.body.id_level;
+    const data = {
+        nisn: body.nisn,
+        nis: body.nis,
+        name: body.name,
+        gender: body.gender,
+        birthplace: body.birthplace,
+        birthdate: body.birthdate,
+        class_id: body.class_id
+    };
 
-//     connection.query('UPDATE users SET nis=?, nama=?, password=?, id_level=? WHERE id=?', [nim, nama, password, level_users, id],
-//         function (error, rows, fields) {
-//             if (error) {
-//                 console.log(error);
-//             } else {
-//                 response.ok("Berhasil Ubah Data", res)
-//             }
-//         });
-// }
+    sql(
+        `UPDATE students SET 
+        nisn=?, nis=?, name=?, gender=?, birthplace=?, birthdate=?, class_id=?
+        WHERE id=?`,
+        res,
+        [data.nisn, data.nis, data.name, data.gender, data.birthplace, data.birthdate, data.class_id, id],
+    );
+};
 
-// //Menghapus data berdasarkan id
-// exports.hapusUsers = function (req, res) {
-//     var id = req.body.id;
-//     connection.query('DELETE FROM users WHERE id=?',[id],
-//         function (error, rows, fields) {
-//             if (error) {
-//                 console.log(error);
-//             } else {
-//                 response.ok("Berhasil Hapus Data", res)
-//             }
-//         });
-// }
+//Menghapus data
+exports.destroy = function (req, res) {
+    const id = req.params.id;
+
+    connection.query(
+        `SELECT * FROM students
+        WHERE id=?`,
+        [id],
+        function(err, result) {
+            if (err) {
+                response.ok({
+                    error: true,
+                    message: err
+                }, res);
+            } else {
+                const user = require('./user');
+                user.destroy(result[0].user_id, function(result) {
+                    response.ok({
+                        error: result.error,
+                        message: result.message
+                    }, res);
+                })
+            }
+        }
+    );
+}
