@@ -3,6 +3,15 @@
 module.exports = function (app) {
     var jsonku = require('./controller');
 
+    // routes siswa
+    const siswa = require('./controller/siswa');
+    app.route('/siswa/findall')
+        .get(siswa.findall);
+    app.route('/siswa/find/:id')
+        .get(siswa.find);
+    app.route('/siswa')
+        .post(siswa.store);
+
     app.route('/')
         .get(jsonku.index);
 

@@ -5,7 +5,7 @@ const conn = mysql.createConnection({
     host:'localhost',
     user:'root',
     password:'',
-    database:'db_backend',
+    database:'elearning',
     port: '3306'
 });
 
