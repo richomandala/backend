@@ -43,7 +43,7 @@ exports.store = function (req, res) {
     const body = req.body;
     
     // create users for student
-    const user = require('./user');
+    const users = require('./users');
     const dataUser = {
         username: body.username,
         email: body.email,
@@ -52,7 +52,7 @@ exports.store = function (req, res) {
     };
     
     // buat user
-    user.store(dataUser, function(result) {
+    users.store(dataUser, function(result) {
         // jika gagal tampil pesan error
         if (result.error) {
             response.error(result.message, res);
@@ -128,8 +128,8 @@ exports.destroy = function (req, res) {
             if (err) {
                 response.error(err.message, res)
             } else {
-                const user = require('./user');
-                user.destroy(values[0].user_id, function(result) {
+                const users = require('./users');
+                users.destroy(values[0].user_id, function(result) {
                     response.success(result, res);
                 })
             }
