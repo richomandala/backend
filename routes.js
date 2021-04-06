@@ -15,6 +15,19 @@ module.exports = function (app) {
         .put(student.update);
     app.route('/student/:id')
         .delete(student.destroy);
+    
+    // routes classes
+    const classes = require('./controller/classes');
+    app.route('/classes')
+        .get(classes.findall);
+    app.route('/classes/:id')
+        .get(classes.find);
+    app.route('/classes')
+        .post(classes.store);
+    app.route('/classes/:id')
+        .put(classes.update);
+    app.route('/classes/:id')
+        .delete(classes.destroy);
 
     // app.route('/')
     //     .get(jsonku.index);
