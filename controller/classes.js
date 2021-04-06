@@ -18,6 +18,24 @@ exports.findall = function (req, res) {
     );
 };
 
+exports.findByMajor = function (req, res) {
+    const id = req.params.id
+
+    connection.query(
+        `SELECT * FROM classes 
+        LEFT JOIN majors ON majors.id = classes.major_id
+        WHERE majors.id = ?`,
+        [id],
+        function(err, values) {
+            if (err) {
+                response.error(error.message, res)
+            } else {
+                response.success(values, res);
+            }
+        }
+    );
+};
+
 //menampilkan data kelas berdasarkan id
 exports.find = function (req, res) {
     let id = req.params.id;
@@ -49,7 +67,7 @@ exports.store = function (req, res) {
 
         connection.query(
             `INSERT INTO classes 
-            (class, grade, major) 
+            (class, grade, major_id) 
             VALUES(?,?,?)`,
             [data.class, data.grade, data.major_id],
             function (err, values) {
@@ -93,14 +111,14 @@ exports.destroy = function (req, res) {
     const id = req.params.id;
 
     connection.query(
-        `SELECT * FROM classes
+        `DELETE FROM classes
         WHERE id=?`,
         [id],
         function(err, values) {
             if (err) {
                 response.error(err.message, res)
             } else {
-                 response.success(result, res);
+                 response.success(values, res);
               }
         }
     );

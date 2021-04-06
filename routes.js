@@ -22,6 +22,8 @@ module.exports = function (app) {
     const classes = require('./controller/classes');
     app.route('/classes')
         .get(classes.findall);
+    app.route('/classes/findByMajor/:id')
+        .get(classes.findByMajor);
     app.route('/classes/:id')
         .get(classes.find);
     app.route('/classes')
