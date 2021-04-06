@@ -7,6 +7,8 @@ module.exports = function (app) {
     const student = require('./controller/students');
     app.route('/student')
         .get(student.findall);
+    app.route('/student/findByClass/:id')
+        .get(student.findByClass);
     app.route('/student/:id')
         .get(student.find);
     app.route('/student')

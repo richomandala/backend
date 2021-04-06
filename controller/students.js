@@ -38,6 +38,25 @@ exports.find = function (req, res) {
     );
 };
 
+//menampilkan data siswa berdasarkan class id
+exports.findByClass = function (req, res) {
+    let id = req.params.id;
+    connection.query(
+        `SELECT * FROM students 
+        LEFT JOIN classes ON classes.id = students.class_id
+        LEFT JOIN majors ON majors.id = classes.major_id
+        WHERE classes.id=?`,
+        [id],
+        function(err, values) {
+            if (err) {
+                response.error(error.message, res)
+            } else {
+                response.success(values, res);
+            }
+        }
+    );
+};
+
 //menambahkan data siswa
 exports.store = function (req, res) {
     const body = req.body;

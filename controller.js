@@ -1,10 +1,10 @@
 'use strict';
 
-var response = require('./res');
+var response = require('./utils/response');
 var connection = require('./koneksi');
 
 exports.index = function (req, res) {
-    response.ok("Aplikasi REST API ku berjalan!", res)
+    response.success("Aplikasi REST API ku berjalan!", res)
 };
 
 //menampilkan semua data mahasiswa
@@ -12,9 +12,9 @@ exports.tampilsemuausers = function (req, res) {
     connection.query('SELECT * FROM `users` LEFT JOIN roles ON roles.id = users.role_id', 
         function (error, rows, fileds) {
         if (error) {
-            console.log(error);
+            response.error(error.message, res);
         } else {
-            response.ok(rows, res);
+            response.success(rows, res);
         }
     });
 };
@@ -25,9 +25,9 @@ exports.tampilberdasarkanid = function (req, res) {
     connection.query('SELECT * FROM users WHERE id = ?', [id],
         function (error, rows, fields) {
             if (error) {
-                console.log(error);
+                response.error(error.message, res);
             } else {
-                response.ok(rows, res);
+                response.success(rows, res);
             }
         });
 };
@@ -90,14 +90,14 @@ exports.loginUsers = function (req, res) {
     connection.query('SELECT * FROM users WHERE nis=? AND password=?', [nis, password],
         function (error, rows, fileds) {
             if (error) {
-                console.log(error);
+                response.error(error.message, res);
             } else {
                 console.log(rows)
                 if(rows.length === 0){
-                    response.ok(rows, res, "nis dan password tidak ditemukan")
+                    response.error("nis dan password tidak ditemukan", res)
                 } else {
                     if (rows[0].id_level == 3) {
-                        response.ok(rows, res, "INI SISWA")
+                        response.success(rows, res)
                         // connection.query(`SELECT * FROM users 
                         //                 LEFT JOIN roles ON roles.id = users.role_id 
                         //                 LEFT JOIN tingkat ON tingkat.id = level_users.id_tingkat 
@@ -112,9 +112,9 @@ exports.loginUsers = function (req, res) {
                         //     }
                         // })
                     } else if (rows[0].id_level === 2) {
-                        response.ok(rows, res, "Berhasil Login GURU")
+                        response.success(rows, res)
                     } else {
-                        response.ok(rows, res, "Berhasil Login ADMIN")
+                        response.success(rows, res)
                     }
                     // response.ok(rows, res, "Berhasil Login")
                 }

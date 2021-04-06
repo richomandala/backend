@@ -2,7 +2,7 @@
 var connection = require('../koneksi');
 var mysql = require('mysql');
 var md5 = require('md5');
-var response = require('../res');
+var response = require('../utils/response');
 var jwt = require('jsonwebtoken');
 var config = require('../config/secret');
 var ip = require('ip');
@@ -59,7 +59,7 @@ exports.ubahPassword = function (req, res) {
 
      connection.query(query, function (error, rows) {
           if (error) {
-               console.log(error);
+               response.error(error.message, res);
           } else {
                if (rows.length == 1) {
                     email = rows[0].email;
@@ -125,7 +125,7 @@ exports.registrasi = function (req, res) {
 
      connection.query(query, function (error, rows) {
           if (error) {
-               console.log(error);
+               response.error(error.message, res);
           } else {
                if (rows.length == 0) {
                     var query = "INSERT INTO ?? SET ?";
@@ -133,7 +133,7 @@ exports.registrasi = function (req, res) {
                     query = mysql.format(query, table);
                     connection.query(query, post, function (error, rows) {
                          if (error) {
-                              console.log(error);
+                              response.error(error.message, res);
                          } else {
                               //kirimkan email verifikasi
                               rand = Math.floor((Math.random() * 100) + 54)
@@ -188,7 +188,7 @@ exports.login = function (req, res) {
 
      connection.query(query, function (error, rows) {
           if (error) {
-               console.log(error);
+               response.error(error.message, res);
           } else {
                if (rows.length == 1) {
                     var token = jwt.sign({ rows }, config.secret, {
@@ -219,7 +219,7 @@ exports.login = function (req, res) {
                     query = mysql.format(query, table);
                     connection.query(query, data, function (error, rows) {
                          if (error) {
-                              console.log(error);
+                              response.error(error.message, res);
                          } else {
                               res.json({
                                    success: true,
@@ -244,7 +244,7 @@ exports.login = function (req, res) {
 }
 
 exports.halamanrahasia = function (req, res) {
-     response.ok("Halaman ini hanya untuk user dengan role = 2!", res);
+     response.error("Halaman ini hanya untuk user dengan role = 2!", res);
 }
 
 
@@ -252,9 +252,9 @@ exports.halamanrahasia = function (req, res) {
 exports.adminmahasiswa = function (req, res) {
      connection.query('SELECT * FROM mahasiswa', function (error, rows, fileds) {
           if (error) {
-               console.log(error);
+               response.error(error.message, res);
           } else {
-               response.ok(rows, res)
+               response.success(rows, res)
           }
      });
 };
