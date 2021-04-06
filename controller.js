@@ -9,7 +9,8 @@ exports.index = function (req, res) {
 
 //menampilkan semua data mahasiswa
 exports.tampilsemuausers = function (req, res) {
-    connection.query('SELECT * FROM `users` LEFT JOIN level_users ON level_users.id = users.id_level', function (error, rows, fileds) {
+    connection.query('SELECT * FROM `users` LEFT JOIN roles ON roles.id = users.role_id', 
+        function (error, rows, fileds) {
         if (error) {
             console.log(error);
         } else {
@@ -31,55 +32,56 @@ exports.tampilberdasarkanid = function (req, res) {
         });
 };
 
-//menambahkan data mahasiswa
-exports.tambahUsers = function (req, res) {
-    var nis = req.body.nis;
-    var nama = req.body.nama;
-    var password = req.body.password;
-    var id_level = req.body.id_level;
+// //menambahkan data mahasiswa
+// exports.tambahUsers = function (req, res) {
+//     var nis = req.body.nis;
+//     var nama = req.body.nama;
+//     var password = req.body.password;
+//     var id_level = req.body.id_level;
 
-    connection.query('INSERT INTO users (nis,nama,password,id_level) VALUES(?,?,?,?)',
-        [nis, nama, password, id_level],
-        function (error, rows, fields) {
-            if (error) {
-                console.log(error);
-            } else {
-                response.ok("Berhasil Menambahkan Data!", res)
-            }
-        });
-};
+//     connection.query('INSERT INTO users (nis,nama,password,id_level) VALUES(?,?,?,?)',
+//         [nis, nama, password, id_level],
+//         function (error, rows, fields) {
+//             if (error) {
+//                 console.log(error);
+//             } else {
+//                 response.ok("Berhasil Menambahkan Data!", res)
+//             }
+//         });
+// };
 
 
-//mengubah data berdasarkan id
-exports.ubahUsers = function (req, res) {
-    var id = req.body.id;
-    var nis = req.body.nis;
-    var nama = req.body.nama;
-    var password = req.body.password;
-    var id_level= req.body.id_level;
+// //mengubah data berdasarkan id
+// exports.ubahUsers = function (req, res) {
+//     var id = req.body.id;
+//     var nis = req.body.nis;
+//     var nama = req.body.nama;
+//     var password = req.body.password;
+//     var id_level= req.body.id_level;
 
-    connection.query('UPDATE users SET nis=?, nama=?, password=?, id_level=? WHERE id=?', [nim, nama, password, level_users, id],
-        function (error, rows, fields) {
-            if (error) {
-                console.log(error);
-            } else {
-                response.ok("Berhasil Ubah Data", res)
-            }
-        });
-}
+//     connection.query('UPDATE users SET username=?, email=?, password=?, role_id=? WHERE id=?', 
+//         [username, email, password, role_id, id],
+//         function (error, rows, fields) {
+//             if (error) {
+//                 console.log(error);
+//             } else {
+//                 response.ok("Berhasil Ubah Data", res)
+//             }
+//         });
+// }
 
-//Menghapus data berdasarkan id
-exports.hapusUsers = function (req, res) {
-    var id = req.body.id;
-    connection.query('DELETE FROM users WHERE id=?',[id],
-        function (error, rows, fields) {
-            if (error) {
-                console.log(error);
-            } else {
-                response.ok("Berhasil Hapus Data", res)
-            }
-        });
-}
+// //Menghapus data berdasarkan id
+// exports.hapusUsers = function (req, res) {
+//     var id = req.body.id;
+//     connection.query('DELETE FROM users WHERE id=?',[id],
+//         function (error, rows, fields) {
+//             if (error) {
+//                 console.log(error);
+//             } else {
+//                 response.ok("Berhasil Hapus Data", res)
+//             }
+//         });
+// }
 
 exports.loginUsers = function (req, res) {
     var nis = req.body.nis;
@@ -96,13 +98,19 @@ exports.loginUsers = function (req, res) {
                 } else {
                     if (rows[0].id_level == 3) {
                         response.ok(rows, res, "INI SISWA")
-                        connection.query('SELECT * FROM `users` LEFT JOIN level_users ON level_users.id = users.id_level LEFT JOIN tingkat ON tingkat.id = level_users.id_tingkat LEFT JOIN jurusan ON jurusan.id = tingkat.id_jurusan LEFT JOIN kelas ON kelas.id = jurusan.id_kelas WHERE id_level=3',  function(err, result){
-                            if(err){
-                                console.log(err)
-                            } else {
-                                response.ok(result, res, "INI SISWA")
-                            }
-                        })
+                        // connection.query(`SELECT * FROM users 
+                        //                 LEFT JOIN roles ON roles.id = users.role_id 
+                        //                 LEFT JOIN tingkat ON tingkat.id = level_users.id_tingkat 
+                        //                 LEFT JOIN jurusan ON jurusan.id = tingkat.id_jurusan 
+                        //                 LEFT JOIN kelas ON kelas.id = jurusan.id_kelas 
+                        //                 WHERE id_level=3`,  
+                        //                 function(err, result){
+                        //     if(err){
+                        //         console.log(err)
+                        //     } else {
+                        //         response.ok(result, res, "INI SISWA")
+                        //     }
+                        // })
                     } else if (rows[0].id_level === 2) {
                         response.ok(rows, res, "Berhasil Login GURU")
                     } else {
