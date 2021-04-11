@@ -3,13 +3,15 @@
 var response = require('../utils/response');
 var connection = require('../koneksi');
 
-const table = "classes";
+const table = "classrooms";
 
-//menampilkan semua data kelas
+//menampilkan semua data ruang kelas
 exports.findall = function (req, res) {
     connection.query(
-        `SELECT * FROM ${table} 
-        LEFT JOIN majors ON majors.id = ${table}.major_id`,
+        `SELECT * FROM ${table}
+        LEFT JOIN teachers ON teachers.id = ${table}.teacher_id
+        LEFT JOIN subjects ON subjects.id = ${table}.subject_id
+        LEFT JOIN classes ON classes.id = ${table}.class_id`,
         function(err, values) {
             if (err) {
                 response.error(error.message, res)
@@ -20,30 +22,14 @@ exports.findall = function (req, res) {
     );
 };
 
-exports.findByMajor = function (req, res) {
-    const id = req.params.id
-
-    connection.query(
-        `SELECT * FROM ${table} 
-        LEFT JOIN majors ON majors.id = ${table}.major_id
-        WHERE majors.id = ?`,
-        [id],
-        function(err, values) {
-            if (err) {
-                response.error(error.message, res)
-            } else {
-                response.success(values, res);
-            }
-        }
-    );
-};
-
-//menampilkan data kelas berdasarkan id
+//menampilkan data ruang kelas berdasarkan id
 exports.find = function (req, res) {
     let id = req.params.id;
     connection.query(
         `SELECT * FROM ${table}
-        LEFT JOIN majors ON majors.id = ${table}.major_id
+        LEFT JOIN teachers ON teachers.id = ${table}.teacher_id
+        LEFT JOIN subjects ON subjects.id = ${table}.subject_id
+        LEFT JOIN classes ON classes.id = ${table}.class_id
         WHERE ${table}.id=?`,
         [id],
         function(err, values) {
@@ -56,21 +42,21 @@ exports.find = function (req, res) {
     );
 };
 
-//menambahkan data siswa
+//menambahkan data ruang kelas
 exports.store = function (req, res) {
     const body = req.body;
     
     const data = {
-        class: body.class,
-        grade: body.grade,
-        major_id: body.major_id
+        teacher_id: body.teacher_id,
+        subject_id: body.subject_id,
+        class_id: body.class_id
     };
 
     connection.query(
         `INSERT INTO ${table} 
-        (class, grade, major_id) 
+        (teacher_id, subject_id, class_id) 
         VALUES(?,?,?)`,
-        [data.class, data.grade, data.major_id],
+        [data.teacher_id, data.subject_id, data.class_id],
         function (err, values) {
             if (err) {
                 response.error(err.message, res);
@@ -81,22 +67,22 @@ exports.store = function (req, res) {
     );
 };
 
-//mengubah data kelas
+//mengubah data ruang kelas
 exports.update = function (req, res) {
     const id = req.params.id
     const body = req.body;
 
     const data = {
-        class: body.class,
-        grade: body.grade,
-        major_id: body.major_id
+        teacher_id: body.teacher_id,
+        subject_id: body.subject_id,
+        class_id: body.class_id
     };
 
     connection.query(
         `UPDATE ${table} SET 
-        class=?, grade=?, major_id=?
+        teacher_id=?, subject_id=?, class_id=?
         WHERE id=?`,
-        [data.class, data.grade, data.major_id, id],
+        [data.teacher_id, data.subject_id, data.class_id, id],
         function (err, values) {
             if (err) {
                 response.error(err.message, res);

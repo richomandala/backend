@@ -3,13 +3,12 @@
 var response = require('../utils/response');
 var connection = require('../koneksi');
 
-const table = "classes";
+const table = "subjects";
 
-//menampilkan semua data kelas
+//menampilkan semua data mata pelajaran
 exports.findall = function (req, res) {
     connection.query(
-        `SELECT * FROM ${table} 
-        LEFT JOIN majors ON majors.id = ${table}.major_id`,
+        `SELECT * FROM ${table}`,
         function(err, values) {
             if (err) {
                 response.error(error.message, res)
@@ -20,30 +19,11 @@ exports.findall = function (req, res) {
     );
 };
 
-exports.findByMajor = function (req, res) {
-    const id = req.params.id
-
-    connection.query(
-        `SELECT * FROM ${table} 
-        LEFT JOIN majors ON majors.id = ${table}.major_id
-        WHERE majors.id = ?`,
-        [id],
-        function(err, values) {
-            if (err) {
-                response.error(error.message, res)
-            } else {
-                response.success(values, res);
-            }
-        }
-    );
-};
-
-//menampilkan data kelas berdasarkan id
+//menampilkan data mata pelajaran berdasarkan id
 exports.find = function (req, res) {
     let id = req.params.id;
     connection.query(
         `SELECT * FROM ${table}
-        LEFT JOIN majors ON majors.id = ${table}.major_id
         WHERE ${table}.id=?`,
         [id],
         function(err, values) {
@@ -56,21 +36,20 @@ exports.find = function (req, res) {
     );
 };
 
-//menambahkan data siswa
+//menambahkan data mata pelajaran
 exports.store = function (req, res) {
     const body = req.body;
     
     const data = {
-        class: body.class,
-        grade: body.grade,
-        major_id: body.major_id
+        code: body.code,
+        subject: body.subject
     };
 
     connection.query(
         `INSERT INTO ${table} 
-        (class, grade, major_id) 
-        VALUES(?,?,?)`,
-        [data.class, data.grade, data.major_id],
+        (code, subject) 
+        VALUES(?,?)`,
+        [data.code, data.subject],
         function (err, values) {
             if (err) {
                 response.error(err.message, res);
@@ -81,22 +60,21 @@ exports.store = function (req, res) {
     );
 };
 
-//mengubah data kelas
+//mengubah data mata pelajaran
 exports.update = function (req, res) {
     const id = req.params.id
     const body = req.body;
 
     const data = {
-        class: body.class,
-        grade: body.grade,
-        major_id: body.major_id
+        code: body.code,
+        subject: body.subject
     };
 
     connection.query(
         `UPDATE ${table} SET 
-        class=?, grade=?, major_id=?
+        code=?, subject=?
         WHERE id=?`,
-        [data.class, data.grade, data.major_id, id],
+        [data.code, data.subject, id],
         function (err, values) {
             if (err) {
                 response.error(err.message, res);

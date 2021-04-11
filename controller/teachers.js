@@ -3,14 +3,12 @@
 var response = require('../utils/response');
 var connection = require('../koneksi');
 
-const table = "students";
+const table = "teachers";
 
-//menampilkan semua data siswa
+//menampilkan semua data guru
 exports.findall = function (req, res) {
     connection.query(
-        `SELECT * FROM ${table} 
-        LEFT JOIN classes ON classes.id = ${table}.class_id
-        LEFT JOIN majors ON majors.id = classes.major_id`,
+        `SELECT * FROM ${table}`,
         function(err, values) {
             if (err) {
                 response.error(error.message, res)
@@ -21,13 +19,11 @@ exports.findall = function (req, res) {
     );
 };
 
-//menampilkan data siswa berdasarkan id
+// menampilkan data guru berdasarkan id
 exports.find = function (req, res) {
     let id = req.params.id;
     connection.query(
         `SELECT * FROM ${table} 
-        LEFT JOIN classes ON classes.id = ${table}.class_id
-        LEFT JOIN majors ON majors.id = classes.major_id
         WHERE ${table}.id=?`,
         [id],
         function(err, values) {
@@ -40,36 +36,17 @@ exports.find = function (req, res) {
     );
 };
 
-//menampilkan data siswa berdasarkan class id
-exports.findByClass = function (req, res) {
-    let id = req.params.id;
-    connection.query(
-        `SELECT * FROM ${table} 
-        LEFT JOIN classes ON classes.id = ${table}.class_id
-        LEFT JOIN majors ON majors.id = classes.major_id
-        WHERE classes.id=?`,
-        [id],
-        function(err, values) {
-            if (err) {
-                response.error(error.message, res)
-            } else {
-                response.success(values, res);
-            }
-        }
-    );
-};
-
-//menambahkan data siswa
+//menambahkan data guru
 exports.store = function (req, res) {
     const body = req.body;
     
-    // create users for student
+    // create users for teacher
     const users = require('./users');
     const dataUser = {
         username: body.username,
         email: body.email,
         password: body.password,
-        role_id: 3 // 3 untuk siswa
+        role_id: 2 // 2 untuk guru
     };
     
     // buat user
@@ -80,21 +57,19 @@ exports.store = function (req, res) {
         // jika berhasil tambah data siswa
         } else {
             const data = {
-                nisn: body.nisn,
-                nis: body.nis,
+                nip: body.nip,
                 name: body.name,
                 gender: body.gender,
                 birthplace: body.birthplace,
                 birthdate: body.birthdate,
-                user_id: result.id,
-                class_id: body.class_id
+                user_id: result.id
             };
 
             connection.query(
                 `INSERT INTO ${table} 
-                (nisn, nis, name, gender, birthplace, birthdate, user_id, class_id) 
-                VALUES(?,?,?,?,?,?,?,?)`,
-                [data.nisn, data.nis, data.name, data.gender, data.birthplace, data.birthdate, data.user_id, data.class_id],
+                (nip, name, gender, birthplace, birthdate, user_id) 
+                VALUES(?,?,?,?,?,?)`,
+                [data.nip, data.name, data.gender, data.birthplace, data.birthdate, data.user_id],
                 function (err, values) {
                     if (err) {
                         response.error(err.message, res);
@@ -107,26 +82,24 @@ exports.store = function (req, res) {
     });
 };
 
-//mengubah data siswa
+//mengubah data guru
 exports.update = function (req, res) {
     const id = req.params.id
     const body = req.body;
 
     const data = {
-        nisn: body.nisn,
-        nis: body.nis,
+        nip: body.nip,
         name: body.name,
         gender: body.gender,
         birthplace: body.birthplace,
-        birthdate: body.birthdate,
-        class_id: body.class_id
+        birthdate: body.birthdate
     };
 
     connection.query(
         `UPDATE ${table} SET 
-        nisn=?, nis=?, name=?, gender=?, birthplace=?, birthdate=?, class_id=?
+        nip=?, name=?, gender=?, birthplace=?, birthdate=?
         WHERE id=?`,
-        [data.nisn, data.nis, data.name, data.gender, data.birthplace, data.birthdate, data.class_id, id],
+        [data.nip, data.name, data.gender, data.birthplace, data.birthdate, id],
         function (err, values) {
             if (err) {
                 response.error(err.message, res);
