@@ -84,24 +84,29 @@ module.exports = function (app) {
     app.route('/classrooms/:id')
         .delete(classrooms.destroy);
 
-    // app.route('/')
-    //     .get(jsonku.index);
+    // routes subject matter
+    const subjectMatters = require('./controller/subjectMatters');
+    app.route('/subjectMatters')
+        .get(subjectMatters.findall);
+    app.route('/subjectMatters/:id')
+        .get(subjectMatters.find);
+    app.route('/subjectMatters')
+        .post(subjectMatters.store);
+    app.route('/subjectMatters/:id')
+        .put(subjectMatters.update);
+    app.route('/subjectMatters/:id')
+        .delete(subjectMatters.destroy);
 
-    // app.route('/tampil')
-    //     .get(jsonku.tampilsemuausers);
-
-    // app.route('/tampil/:id')
-    //     .get(jsonku.tampilberdasarkanid);
-
-    // app.route('/tambah')
-    //     .post(jsonku.tambahUsers);
-
-    // app.route('/ubah')
-    //     .put(jsonku.ubahUsers);
-
-    // app.route('/hapus')
-    //     .delete(jsonku.hapusUsers);
-
-    // app.route('/login')
-    //     .post(jsonku.loginUsers);
+    // routes classworks
+    const classworks = require('./controller/classworks');
+    app.route('/classworks')
+        .get(classworks.findall);
+    app.route('/classworks/:id')
+        .get(classworks.find);
+    app.route('/classworks')
+        .post(classworks.store);
+    app.route('/classworks/:id')
+        .put(classworks.update);
+    app.route('/classworks/:id')
+        .delete(classworks.destroy);
 }

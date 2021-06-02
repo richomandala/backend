@@ -3,9 +3,9 @@
 var response = require('../utils/response');
 var connection = require('../koneksi');
 
-const table = "subjects";
+const table = "subject_matters";
 
-//menampilkan semua data mata pelajaran
+//menampilkan semua data materi
 exports.findall = function (req, res) {
     connection.query(
         `SELECT * FROM ${table}`,
@@ -23,7 +23,7 @@ exports.findall = function (req, res) {
     );
 };
 
-//menampilkan data mata pelajaran berdasarkan id
+//menampilkan data materi berdasarkan id
 exports.find = function (req, res) {
     let id = req.params.id;
     connection.query(
@@ -44,20 +44,22 @@ exports.find = function (req, res) {
     );
 };
 
-//menambahkan data mata pelajaran
+//menambahkan data materi
 exports.store = function (req, res) {
     const body = req.body;
 
     const data = {
-        code: body.code,
-        subject: body.subject
+        title: body.title,
+        content: body.content,
+        file_path: body.file_path,
+        classroom_id: body.classroom_id
     };
 
     connection.query(
         `INSERT INTO ${table} 
-        (code, subject) 
-        VALUES(?,?)`,
-        [data.code, data.subject],
+        (title, content, file_path, classroom_id) 
+        VALUES(?,?,?,?)`,
+        [data.title, data.content, data.file_path, data.classroom_id],
         function (err, values) {
             if (err) {
                 response.error(err.message, res);
@@ -68,21 +70,23 @@ exports.store = function (req, res) {
     );
 };
 
-//mengubah data mata pelajaran
+//mengubah data materi
 exports.update = function (req, res) {
     const id = req.params.id
     const body = req.body;
 
     const data = {
-        code: body.code,
-        subject: body.subject
+        title: body.title,
+        content: body.content,
+        file_path: body.file_path,
+        classroom_id: body.classroom_id
     };
 
     connection.query(
         `UPDATE ${table} SET 
-        code=?, subject=?
+        title=?, content=?, file_path=?, classroom_id=?
         WHERE id=?`,
-        [data.code, data.subject, id],
+        [data.title, data.content, data.file_path, data.classroom_id, id],
         function (err, values) {
             if (err) {
                 response.error(err.message, res);

@@ -11,11 +11,15 @@ exports.findall = function (req, res) {
         `SELECT * FROM ${table} 
         LEFT JOIN classes ON classes.id = ${table}.class_id
         LEFT JOIN majors ON majors.id = classes.major_id`,
-        function(err, values) {
+        function (err, values) {
             if (err) {
                 response.error(error.message, res)
             } else {
-                response.success(values, res);
+                if (values.length) {
+                    response.success(values, res);
+                } else {
+                    response.notFound(res);
+                }
             }
         }
     );
@@ -30,11 +34,15 @@ exports.find = function (req, res) {
         LEFT JOIN majors ON majors.id = classes.major_id
         WHERE ${table}.id=?`,
         [id],
-        function(err, values) {
+        function (err, values) {
             if (err) {
                 response.error(error.message, res)
             } else {
-                response.success(values[0], res);
+                if (values.length) {
+                    response.success(values[0], res);
+                } else {
+                    response.notFound(res);
+                }
             }
         }
     );
@@ -49,11 +57,15 @@ exports.findByClass = function (req, res) {
         LEFT JOIN majors ON majors.id = classes.major_id
         WHERE classes.id=?`,
         [id],
-        function(err, values) {
+        function (err, values) {
             if (err) {
                 response.error(error.message, res)
             } else {
-                response.success(values, res);
+                if (values.length) {
+                    response.success(values, res);
+                } else {
+                    response.notFound(res);
+                }
             }
         }
     );
@@ -62,7 +74,7 @@ exports.findByClass = function (req, res) {
 //menambahkan data siswa
 exports.store = function (req, res) {
     const body = req.body;
-    
+
     // create users for student
     const users = require('./users');
     const dataUser = {
@@ -71,13 +83,13 @@ exports.store = function (req, res) {
         password: body.password,
         role_id: 3 // 3 untuk siswa
     };
-    
+
     // buat user
-    users.store(dataUser, function(result) {
+    users.store(dataUser, function (result) {
         // jika gagal tampil pesan error
         if (result.error) {
             response.error(result.message, res);
-        // jika berhasil tambah data siswa
+            // jika berhasil tambah data siswa
         } else {
             const data = {
                 nisn: body.nisn,
@@ -145,12 +157,12 @@ exports.destroy = function (req, res) {
         `SELECT * FROM ${table}
         WHERE id=?`,
         [id],
-        function(err, values) {
+        function (err, values) {
             if (err) {
                 response.error(err.message, res)
             } else {
                 const users = require('./users');
-                users.destroy(values[0].user_id, function(result) {
+                users.destroy(values[0].user_id, function (result) {
                     response.success(result, res);
                 })
             }

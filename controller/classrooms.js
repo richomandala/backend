@@ -12,11 +12,15 @@ exports.findall = function (req, res) {
         LEFT JOIN teachers ON teachers.id = ${table}.teacher_id
         LEFT JOIN subjects ON subjects.id = ${table}.subject_id
         LEFT JOIN classes ON classes.id = ${table}.class_id`,
-        function(err, values) {
+        function (err, values) {
             if (err) {
                 response.error(error.message, res)
             } else {
-                response.success(values, res);
+                if (values.length) {
+                    response.success(values, res);
+                } else {
+                    response.notFound(res);
+                }
             }
         }
     );
@@ -32,11 +36,15 @@ exports.find = function (req, res) {
         LEFT JOIN classes ON classes.id = ${table}.class_id
         WHERE ${table}.id=?`,
         [id],
-        function(err, values) {
+        function (err, values) {
             if (err) {
                 response.error(error.message, res)
             } else {
-                response.success(values[0], res);
+                if (values.length) {
+                    response.success(values[0], res);
+                } else {
+                    response.notFound(res);
+                }
             }
         }
     );
@@ -45,7 +53,7 @@ exports.find = function (req, res) {
 //menambahkan data ruang kelas
 exports.store = function (req, res) {
     const body = req.body;
-    
+
     const data = {
         teacher_id: body.teacher_id,
         subject_id: body.subject_id,
@@ -101,12 +109,12 @@ exports.destroy = function (req, res) {
         `DELETE FROM ${table}
         WHERE id=?`,
         [id],
-        function(err, values) {
+        function (err, values) {
             if (err) {
                 response.error(err.message, res)
             } else {
-                 response.success(values, res);
-              }
+                response.success(values, res);
+            }
         }
     );
 }
