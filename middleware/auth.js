@@ -110,16 +110,14 @@ exports.ubahPassword = function (req, res) {
 //controller untuk registrasi user
 exports.registrasi = function (req, res) {
      var post = {
-          username: req.body.username,
-          email: req.body.email,
+          nis: req.body.nis,
+          nama: req.body.nama,
           password: md5(req.body.password),
-          role: 3,
-          tanggal_daftar: new Date(),
-          isVerified: 0
+          id_level: 3,
      }
 
-     var query = "SELECT email FROM ?? WHERE ??=?";
-     var table = ["user", "email", post.email];
+     var query = "SELECT nis FROM ?? WHERE ??=?";
+     var table = ["users", "nis", post.nis];
 
      query = mysql.format(query, table);
 
