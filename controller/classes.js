@@ -10,7 +10,7 @@ exports.findall = function (req, res) {
     connection.query(
         `SELECT ${table}.*, major FROM ${table} 
         LEFT JOIN majors ON majors.id = ${table}.major_id`,
-        function(err, values) {
+        function (err, values) {
             if (err) {
                 response.error(error.message, res)
             } else {
@@ -32,7 +32,7 @@ exports.findByMajor = function (req, res) {
         LEFT JOIN majors ON majors.id = ${table}.major_id
         WHERE majors.id = ?`,
         [id],
-        function(err, values) {
+        function (err, values) {
             if (err) {
                 response.error(error.message, res)
             } else {
@@ -54,7 +54,7 @@ exports.find = function (req, res) {
         LEFT JOIN majors ON majors.id = ${table}.major_id
         WHERE ${table}.id=?`,
         [id],
-        function(err, values) {
+        function (err, values) {
             if (err) {
                 response.error(error.message, res)
             } else {
@@ -68,10 +68,10 @@ exports.find = function (req, res) {
     );
 };
 
-//menambahkan data siswa
+//menambahkan data kelas
 exports.store = function (req, res) {
     const body = req.body;
-    
+
     const data = {
         class: body.class,
         grade: body.grade,
@@ -127,12 +127,12 @@ exports.destroy = function (req, res) {
         `DELETE FROM ${table}
         WHERE id=?`,
         [id],
-        function(err, values) {
+        function (err, values) {
             if (err) {
                 response.error(err.message, res)
             } else {
-                 response.success(values, res);
-              }
+                response.success(values, res);
+            }
         }
     );
 }

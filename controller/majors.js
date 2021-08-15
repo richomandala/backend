@@ -9,7 +9,7 @@ const table = "majors";
 exports.findall = function (req, res) {
     connection.query(
         `SELECT * FROM ${table}`,
-        function(err, values) {
+        function (err, values) {
             if (err) {
                 response.error(error.message, res)
             } else {
@@ -30,7 +30,7 @@ exports.find = function (req, res) {
         `SELECT * FROM ${table}
         WHERE ${table}.id=?`,
         [id],
-        function(err, values) {
+        function (err, values) {
             if (err) {
                 response.error(error.message, res)
             } else {
@@ -47,7 +47,7 @@ exports.find = function (req, res) {
 //menambahkan data jurusan
 exports.store = function (req, res) {
     const body = req.body;
-    
+
     const data = {
         code: body.code,
         major: body.major
@@ -101,12 +101,12 @@ exports.destroy = function (req, res) {
         `DELETE FROM ${table}
         WHERE id=?`,
         [id],
-        function(err, values) {
+        function (err, values) {
             if (err) {
                 response.error(err.message, res)
             } else {
-                 response.success(values, res);
-              }
+                response.success(values, res);
+            }
         }
     );
 }

@@ -13,8 +13,8 @@ let smtpTransport = nodemailer.createTransport({
      port: 465,
      secure: true,
      auth: {
-          user: "reactjstutorialindonesia@gmail.com",
-          pass: "Reactjs2020"
+          user: "ahmad.saifm95@gmail.com",
+          pass: "green@123"
      }
 })
 
@@ -46,14 +46,14 @@ exports.ubahPassword = function (req, res) {
 
      //buat input req body
      var data = {
-          email: req.body.email,
+          username: req.body.username,
           currpassword: md5(req.body.currpassword),
           newpassword: md5(req.body.newpassword)
      }
 
      //jalankan kueri
-     var query = "SELECT email,password FROM ?? WHERE ??=?";
-     var table = ["user", "email", data.email];
+     var query = "SELECT username,password FROM ?? WHERE ??=?";
+     var table = ["users", "username", data.username];
 
      query = mysql.format(query, table);
 
@@ -62,7 +62,7 @@ exports.ubahPassword = function (req, res) {
                response.error(error.message, res);
           } else {
                if (rows.length == 1) {
-                    email = rows[0].email;
+                    username = rows[0].username;
                     password = rows[0].password;
 
                     if (data.currpassword == password) {
@@ -72,8 +72,8 @@ exports.ubahPassword = function (req, res) {
                                    message: "Password masih sama dengan sebelumnya!"
                               }).end()
                          } else {
-                              connection.query('UPDATE user SET password=? WHERE email=?',
-                                   [data.newpassword, email],
+                              connection.query('UPDATE users SET password=? WHERE username=?',
+                                   [data.newpassword, username],
                                    function (error, rows, fields) {
                                         if (error) {
                                              res.json({
@@ -113,13 +113,11 @@ exports.registrasi = function (req, res) {
           username: req.body.username,
           email: req.body.email,
           password: md5(req.body.password),
-          role: 3,
-          tanggal_daftar: new Date(),
-          isVerified: 0
+          role_id: req.body.role_id,
      }
 
-     var query = "SELECT email FROM ?? WHERE ??=?";
-     var table = ["user", "email", post.email];
+     var query = "SELECT username FROM ?? WHERE ??=?";
+     var table = ["users", "username", post.username];
 
      query = mysql.format(query, table);
 
@@ -129,38 +127,43 @@ exports.registrasi = function (req, res) {
           } else {
                if (rows.length == 0) {
                     var query = "INSERT INTO ?? SET ?";
-                    var table = ["user"];
+                    var table = ["users"];
                     query = mysql.format(query, table);
                     connection.query(query, post, function (error, rows) {
                          if (error) {
                               response.error(error.message, res);
                          } else {
-                              //kirimkan email verifikasi
-                              rand = Math.floor((Math.random() * 100) + 54)
-                              host = "localhost:3001"
-                              link = "http://" + host + "/auth/verify?id=" + rand
-                              mailOptions = {
-                                   to: post.email,
-                                   subject: "Verifikasi Email",
-                                   html: "Hallo, <br> Please klik tautan verifikasi berikut <br>" +
-                                        "<a href=" + link + ">Click here to verifikasi</a>"
-                              }
+                              res.json({
+                                   success: true,
+                                   isRegistered: false,
+                                   message: "Akun berhasil dibuat!"
+                              }).end();
+                              // //kirimkan email verifikasi
+                              // rand = Math.floor((Math.random() * 100) + 54)
+                              // host = "localhost:3001"
+                              // link = "http://" + host + "/auth/verify?id=" + rand
+                              // mailOptions = {
+                              //      to: post.email,
+                              //      subject: "Verifikasi Email",
+                              //      html: "Hallo, <br> Please klik tautan verifikasi berikut <br>" +
+                              //           "<a href=" + link + ">Click here to verifikasi</a>"
+                              // }
 
-                              smtpTransport.sendMail(mailOptions, function (error, response) {
-                                   if (error) {
-                                        res.json({
-                                             success: false,
-                                             isRegistered: false,
-                                             message: "Email verfikasi gagal terkirim"
-                                        }).end();
-                                   } else {
-                                        res.json({
-                                             success: true,
-                                             isRegistered: false,
-                                             message: "Email verfikasi berhasil terkirim"
-                                        }).end();
-                                   }
-                              })
+                              // smtpTransport.sendMail(mailOptions, function (error, response) {
+                              //      if (error) {
+                              //           res.json({
+                              //                success: false,
+                              //                isRegistered: false,
+                              //                message: "Email verifikasi gagal terkirim"
+                              //           }).end();
+                              //      } else {
+                              //           res.json({
+                              //                success: true,
+                              //                isRegistered: false,
+                              //                message: "Email verifikasi berhasil terkirim"
+                              //           }).end();
+                              //      }
+                              // })
                          }
                     });
                } else {
@@ -178,11 +181,11 @@ exports.registrasi = function (req, res) {
 exports.login = function (req, res) {
      var post = {
           password: req.body.password,
-          email: req.body.email
+          username: req.body.username
      }
 
      var query = "SELECT * FROM ?? WHERE ??=? AND ??=?";
-     var table = ["user", "password", md5(post.password), "email", post.email];
+     var table = ["users", "password", md5(post.password), "username", post.username];
 
      query = mysql.format(query, table);
 
@@ -196,19 +199,19 @@ exports.login = function (req, res) {
                          expiresIn: '2400000'
                     });
 
-                    id_user = rows[0].id;
-                    //1 tambahan row username
+                    id_users = rows[0].id;
+                    // 1 tambahan row username
                     username = rows[0].username;
                     //2 tambahan row role
-                    role = rows[0].role;
+                    role_id = rows[0].role_id;
 
-                    //3 variable expires
+                    // 3 variable expires
                     // var expired = 30000
                     var expired = 2400000
                     var isVerified = rows[0].isVerified
 
                     var data = {
-                         id_user: id_user,
+                         id_users: id_users,
                          access_token: token,
                          ip_address: ip.address()
                     }
@@ -227,10 +230,10 @@ exports.login = function (req, res) {
                                    token: token,
                                    //4 tambahkan expired time
                                    expires: expired,
-                                   currUser: data.id_user,
+                                   currUser: data.id_users,
                                    user: username,
                                    //3 tambahkan role
-                                   role: role,
+                                   role_id: role_id,
                                    isVerified: isVerified
                               });
                          }
@@ -243,14 +246,14 @@ exports.login = function (req, res) {
      });
 }
 
-exports.halamanrahasia = function (req, res) {
-     response.error("Halaman ini hanya untuk user dengan role = 2!", res);
-}
+// exports.halamanrahasia = function (req, res) {
+//      response.error("Halaman ini hanya untuk user dengan role = 2!", res);
+// }
 
 
-//menampilkan semua data mahasiswa
-exports.adminmahasiswa = function (req, res) {
-     connection.query('SELECT * FROM mahasiswa', function (error, rows, fileds) {
+//menampilkan semua data users
+exports.admin = function (req, res) {
+     connection.query('SELECT * FROM users', function (error, rows, fileds) {
           if (error) {
                response.error(error.message, res);
           } else {
