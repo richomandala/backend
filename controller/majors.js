@@ -13,7 +13,11 @@ exports.findall = function (req, res) {
             if (err) {
                 response.error(error.message, res)
             } else {
-                response.success(values, res);
+                if (values.length > 0) {
+                    response.success(values, res);
+                } else {
+                    response.notfound(res)
+                }
             }
         }
     );
@@ -30,7 +34,11 @@ exports.find = function (req, res) {
             if (err) {
                 response.error(error.message, res)
             } else {
-                response.success(values[0], res);
+                if (values.length > 0) {
+                    response.success(values[0], res);
+                } else {
+                    response.notfound(res)
+                }
             }
         }
     );

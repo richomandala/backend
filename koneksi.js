@@ -4,7 +4,7 @@ var mysql = require('mysql');
 const conn = mysql.createConnection({
     host:'localhost',
     user:'root',
-    password:'',
+    password:'root',
     database:'elearning',
     port: '3306'
 });

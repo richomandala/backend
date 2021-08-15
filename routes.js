@@ -75,6 +75,8 @@ module.exports = function (app) {
     const classrooms = require('./controller/classrooms');
     app.route('/classrooms')
         .get(classrooms.findall);
+    app.route('/classrooms/findByClass/:id')
+        .get(classrooms.findByClass);
     app.route('/classrooms/:id')
         .get(classrooms.find);
     app.route('/classrooms')

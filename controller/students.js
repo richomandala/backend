@@ -8,14 +8,18 @@ const table = "students";
 //menampilkan semua data siswa
 exports.findall = function (req, res) {
     connection.query(
-        `SELECT * FROM ${table} 
+        `SELECT ${table}.*, class, major FROM ${table} 
         LEFT JOIN classes ON classes.id = ${table}.class_id
         LEFT JOIN majors ON majors.id = classes.major_id`,
         function(err, values) {
             if (err) {
                 response.error(error.message, res)
             } else {
-                response.success(values, res);
+                if (values.length > 0) {
+                    response.success(values, res);
+                } else {
+                    response.notfound(res)
+                }
             }
         }
     );
@@ -25,7 +29,7 @@ exports.findall = function (req, res) {
 exports.find = function (req, res) {
     let id = req.params.id;
     connection.query(
-        `SELECT * FROM ${table} 
+        `SELECT ${table}.*, class, major FROM ${table} 
         LEFT JOIN classes ON classes.id = ${table}.class_id
         LEFT JOIN majors ON majors.id = classes.major_id
         WHERE ${table}.id=?`,
@@ -34,7 +38,11 @@ exports.find = function (req, res) {
             if (err) {
                 response.error(error.message, res)
             } else {
-                response.success(values[0], res);
+                if (values.length > 0) {
+                    response.success(values[0], res);
+                } else {
+                    response.notfound(res)
+                }
             }
         }
     );
@@ -44,16 +52,20 @@ exports.find = function (req, res) {
 exports.findByClass = function (req, res) {
     let id = req.params.id;
     connection.query(
-        `SELECT * FROM ${table} 
+        `SELECT ${table}.*, class, major FROM ${table} 
         LEFT JOIN classes ON classes.id = ${table}.class_id
         LEFT JOIN majors ON majors.id = classes.major_id
-        WHERE classes.id=?`,
+        WHERE class_id=?`,
         [id],
         function(err, values) {
             if (err) {
                 response.error(error.message, res)
             } else {
-                response.success(values, res);
+                if (values.length > 0) {
+                    response.success(values, res);
+                } else {
+                    response.notfound(res)
+                }
             }
         }
     );

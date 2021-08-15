@@ -10,6 +10,16 @@ exports.success = function (values, res) {
   res.end();
 };
 
+exports.notfound = function (res) {
+  var data = {
+    'message': 'Not Found',
+    'status' : 404,
+    'timestamp' : new Date()
+  };
+  res.json(data);
+  res.end;
+}
+
 exports.error = function (values, res) {
   var data = {
     'message': 'Error',

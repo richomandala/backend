@@ -8,13 +8,17 @@ const table = "classes";
 //menampilkan semua data kelas
 exports.findall = function (req, res) {
     connection.query(
-        `SELECT * FROM ${table} 
+        `SELECT ${table}.*, major FROM ${table} 
         LEFT JOIN majors ON majors.id = ${table}.major_id`,
         function(err, values) {
             if (err) {
                 response.error(error.message, res)
             } else {
-                response.success(values, res);
+                if (values.length > 0) {
+                    response.success(values, res);
+                } else {
+                    response.notfound(res)
+                }
             }
         }
     );
@@ -24,7 +28,7 @@ exports.findByMajor = function (req, res) {
     const id = req.params.id
 
     connection.query(
-        `SELECT * FROM ${table} 
+        `SELECT ${table}.*, major FROM ${table} 
         LEFT JOIN majors ON majors.id = ${table}.major_id
         WHERE majors.id = ?`,
         [id],
@@ -32,7 +36,11 @@ exports.findByMajor = function (req, res) {
             if (err) {
                 response.error(error.message, res)
             } else {
-                response.success(values, res);
+                if (values.length > 0) {
+                    response.success(values, res);
+                } else {
+                    response.notfound(res)
+                }
             }
         }
     );
@@ -42,7 +50,7 @@ exports.findByMajor = function (req, res) {
 exports.find = function (req, res) {
     let id = req.params.id;
     connection.query(
-        `SELECT * FROM ${table}
+        `SELECT ${table}.*, major FROM ${table} 
         LEFT JOIN majors ON majors.id = ${table}.major_id
         WHERE ${table}.id=?`,
         [id],
@@ -50,7 +58,11 @@ exports.find = function (req, res) {
             if (err) {
                 response.error(error.message, res)
             } else {
-                response.success(values[0], res);
+                if (values.length > 0) {
+                    response.success(values[0], res);
+                } else {
+                    response.notfound(res)
+                }
             }
         }
     );

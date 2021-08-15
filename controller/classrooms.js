@@ -8,7 +8,7 @@ const table = "classrooms";
 //menampilkan semua data ruang kelas
 exports.findall = function (req, res) {
     connection.query(
-        `SELECT * FROM ${table}
+        `SELECT ${table}.*, name, subject, class FROM ${table}
         LEFT JOIN teachers ON teachers.id = ${table}.teacher_id
         LEFT JOIN subjects ON subjects.id = ${table}.subject_id
         LEFT JOIN classes ON classes.id = ${table}.class_id`,
@@ -16,7 +16,11 @@ exports.findall = function (req, res) {
             if (err) {
                 response.error(error.message, res)
             } else {
-                response.success(values, res);
+                if (values.length > 0) {
+                    response.success(values, res);
+                } else {
+                    response.notfound(res)
+                }
             }
         }
     );
@@ -26,7 +30,7 @@ exports.findall = function (req, res) {
 exports.find = function (req, res) {
     let id = req.params.id;
     connection.query(
-        `SELECT * FROM ${table}
+        `SELECT ${table}.*, name, subject, class FROM ${table}
         LEFT JOIN teachers ON teachers.id = ${table}.teacher_id
         LEFT JOIN subjects ON subjects.id = ${table}.subject_id
         LEFT JOIN classes ON classes.id = ${table}.class_id
@@ -36,7 +40,35 @@ exports.find = function (req, res) {
             if (err) {
                 response.error(error.message, res)
             } else {
-                response.success(values[0], res);
+                if (values.length > 0) {
+                    response.success(values[0], res);
+                } else {
+                    response.notfound(res)
+                }
+            }
+        }
+    );
+};
+
+//menampilkan data ruang kelas berdasarkan kelas
+exports.findByClass = function (req, res) {
+    let id = req.params.id;
+    connection.query(
+        `SELECT ${table}.*, name, subject, class FROM ${table}
+        LEFT JOIN teachers ON teachers.id = ${table}.teacher_id
+        LEFT JOIN subjects ON subjects.id = ${table}.subject_id
+        LEFT JOIN classes ON classes.id = ${table}.class_id
+        WHERE ${table}.class_id=?`,
+        [id],
+        function(err, values) {
+            if (err) {
+                response.error(error.message, res)
+            } else {
+                if (values.length > 0) {
+                    response.success(values, res);
+                } else {
+                    response.notfound(res)
+                }
             }
         }
     );
