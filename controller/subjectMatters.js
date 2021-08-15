@@ -13,10 +13,10 @@ exports.findall = function (req, res) {
             if (err) {
                 response.error(error.message, res)
             } else {
-                if (values.length) {
+                if (values.length > 0) {
                     response.success(values, res);
                 } else {
-                    response.notFound(res);
+                    response.notfound(res);
                 }
             }
         }
@@ -34,10 +34,31 @@ exports.find = function (req, res) {
             if (err) {
                 response.error(error.message, res)
             } else {
-                if (values.length) {
+                if (values.length > 0) {
                     response.success(values[0], res);
                 } else {
-                    response.notFound(res);
+                    response.notfound(res);
+                }
+            }
+        }
+    );
+};
+
+//menampilkan data materi berdasarkan classroom
+exports.findByClassroom = function (req, res) {
+    let id = req.params.id;
+    connection.query(
+        `SELECT * FROM ${table}
+        WHERE ${table}.classroom_id=?`,
+        [id],
+        function (err, values) {
+            if (err) {
+                response.error(error.message, res)
+            } else {
+                if (values.length > 0) {
+                    response.success(values, res);
+                } else {
+                    response.notfound(res);
                 }
             }
         }

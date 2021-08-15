@@ -90,6 +90,8 @@ module.exports = function (app) {
     const subjectMatters = require('./controller/subjectMatters');
     app.route('/subjectMatters')
         .get(subjectMatters.findall);
+    app.route('/subjectMatters/findByClassroom/:id')
+        .get(subjectMatters.findByClassroom);
     app.route('/subjectMatters/:id')
         .get(subjectMatters.find);
     app.route('/subjectMatters')
