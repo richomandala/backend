@@ -73,14 +73,15 @@ exports.store = function (req, res) {
         title: body.title,
         content: body.content,
         file_path: body.file_path,
+        is_task: body.is_task,
         classroom_id: body.classroom_id
     };
 
     connection.query(
         `INSERT INTO ${table} 
-        (title, content, file_path, classroom_id) 
-        VALUES(?,?,?,?)`,
-        [data.title, data.content, data.file_path, data.classroom_id],
+        (title, content, file_path, is_task, classroom_id) 
+        VALUES(?,?,?,?,?)`,
+        [data.title, data.content, data.file_path, data.is_task, data.classroom_id],
         function (err, values) {
             if (err) {
                 response.error(err.message, res);
@@ -100,14 +101,15 @@ exports.update = function (req, res) {
         title: body.title,
         content: body.content,
         file_path: body.file_path,
+        is_task: body.is_task,
         classroom_id: body.classroom_id
     };
 
     connection.query(
         `UPDATE ${table} SET 
-        title=?, content=?, file_path=?, classroom_id=?
+        title=?, content=?, file_path=?, is_task=?, classroom_id=?
         WHERE id=?`,
-        [data.title, data.content, data.file_path, data.classroom_id, id],
+        [data.title, data.content, data.file_path, data.is_task, data.classroom_id, id],
         function (err, values) {
             if (err) {
                 response.error(err.message, res);

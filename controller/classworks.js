@@ -16,7 +16,7 @@ exports.findall = function (req, res) {
         if (values.length) {
           response.success(values, res);
         } else {
-          response.notFound(res);
+          response.notfound(res);
         }
       }
     }
@@ -37,7 +37,52 @@ exports.find = function (req, res) {
         if (values.length) {
           response.success(values[0], res);
         } else {
-          response.notFound(res);
+          response.notfound(res);
+        }
+      }
+    }
+  );
+};
+
+//menampilkan data materi berdasarkan student dan subject matter
+exports.findBySubjectMatter = function (req, res) {
+  let subject_matter_id = req.params.subject_matter_id;
+
+  connection.query(
+    `SELECT * FROM ${table}
+        WHERE subject_matter_id=?`,
+    [subject_matter_id],
+    function (err, values) {
+      if (err) {
+        response.error(error.message, res)
+      } else {
+        if (values.length) {
+          response.success(values, res);
+        } else {
+          response.notfound(res);
+        }
+      }
+    }
+  );
+};
+
+//menampilkan data materi berdasarkan student dan subject matter
+exports.findByStudentSubjectMatter = function (req, res) {
+  let student_id = req.params.student_id;
+  let subject_matter_id = req.params.subject_matter_id;
+
+  connection.query(
+    `SELECT * FROM ${table}
+        WHERE student_id=? AND subject_matter_id=?`,
+    [student_id, subject_matter_id],
+    function (err, values) {
+      if (err) {
+        response.error(error.message, res)
+      } else {
+        if (values.length) {
+          response.success(values[0], res);
+        } else {
+          response.notfound(res);
         }
       }
     }

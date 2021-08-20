@@ -13,8 +13,8 @@ let smtpTransport = nodemailer.createTransport({
      port: 465,
      secure: true,
      auth: {
-          user: "ahmad.saifm95@gmail.com",
-          pass: "green@123"
+          user: "xxx",
+          pass: "xxx"
      }
 })
 

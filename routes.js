@@ -1,116 +1,149 @@
 'use strict';
+const verify = require('./controller/auth/verify');
 
 module.exports = function (app) {
+
+    // Auth
+    const auth = require('./controller/auth/login');
+    app.route('/auth/login')
+        .post(auth.login);
 
     // routes students
     const students = require('./controller/students');
     app.route('/students')
-        .get(students.findall);
+        .get(verify(), students.findall);
     app.route('/students/findByClass/:id')
-        .get(students.findByClass);
+        .get(verify(), students.findByClass);
     app.route('/students/:id')
-        .get(students.find);
+        .get(verify(), students.find);
     app.route('/students')
-        .post(students.store);
+        .post(verify(), students.store);
     app.route('/students/:id')
-        .put(students.update);
+        .put(verify(), students.update);
     app.route('/students/:id')
-        .delete(students.destroy);
+        .delete(verify(), students.destroy);
 
     // routes teachers
     const teachers = require('./controller/teachers');
     app.route('/teachers')
-        .get(teachers.findall);
+        .get(verify(), teachers.findall);
     app.route('/teachers/:id')
-        .get(teachers.find);
+        .get(verify(), teachers.find);
     app.route('/teachers')
-        .post(teachers.store);
+        .post(verify(), teachers.store);
     app.route('/teachers/:id')
-        .put(teachers.update);
+        .put(verify(), teachers.update);
     app.route('/teachers/:id')
-        .delete(teachers.destroy);
+        .delete(verify(), teachers.destroy);
 
     // routes class
     const classes = require('./controller/classes');
     app.route('/classes')
-        .get(classes.findall);
+        .get(verify(), classes.findall);
     app.route('/classes/findByMajor/:id')
-        .get(classes.findByMajor);
+        .get(verify(), classes.findByMajor);
     app.route('/classes/:id')
-        .get(classes.find);
+        .get(verify(), classes.find);
     app.route('/classes')
-        .post(classes.store);
+        .post(verify(), classes.store);
     app.route('/classes/:id')
-        .put(classes.update);
+        .put(verify(), classes.update);
     app.route('/classes/:id')
-        .delete(classes.destroy);
+        .delete(verify(), classes.destroy);
 
     // routes majors
     const majors = require('./controller/majors');
     app.route('/majors')
-        .get(majors.findall);
+        .get(verify(), majors.findall);
     app.route('/majors/:id')
-        .get(majors.find);
+        .get(verify(), majors.find);
     app.route('/majors')
-        .post(majors.store);
+        .post(verify(), majors.store);
     app.route('/majors/:id')
-        .put(majors.update);
+        .put(verify(), majors.update);
     app.route('/majors/:id')
-        .delete(majors.destroy);
+        .delete(verify(), majors.destroy);
 
     // routes subjects
     const subjects = require('./controller/subjects');
     app.route('/subjects')
-        .get(subjects.findall);
+        .get(verify(), subjects.findall);
     app.route('/subjects/:id')
-        .get(subjects.find);
+        .get(verify(), subjects.find);
     app.route('/subjects')
-        .post(subjects.store);
+        .post(verify(), subjects.store);
     app.route('/subjects/:id')
-        .put(subjects.update);
+        .put(verify(), subjects.update);
     app.route('/subjects/:id')
-        .delete(subjects.destroy);
+        .delete(verify(), subjects.destroy);
 
     // routes classroom
     const classrooms = require('./controller/classrooms');
     app.route('/classrooms')
-        .get(classrooms.findall);
+        .get(verify(), classrooms.findall);
     app.route('/classrooms/findByClass/:id')
-        .get(classrooms.findByClass);
+        .get(verify(), classrooms.findByClass);
+    app.route('/classrooms/findByTeacher/:id')
+        .get(verify(), classrooms.findByTeacher);
     app.route('/classrooms/:id')
-        .get(classrooms.find);
+        .get(verify(), classrooms.find);
     app.route('/classrooms')
-        .post(classrooms.store);
+        .post(verify(), classrooms.store);
     app.route('/classrooms/:id')
-        .put(classrooms.update);
+        .put(verify(), classrooms.update);
     app.route('/classrooms/:id')
-        .delete(classrooms.destroy);
+        .delete(verify(), classrooms.destroy);
 
     // routes subject matter
     const subjectMatters = require('./controller/subjectMatters');
     app.route('/subjectMatters')
-        .get(subjectMatters.findall);
+        .get(verify(), subjectMatters.findall);
     app.route('/subjectMatters/findByClassroom/:id')
-        .get(subjectMatters.findByClassroom);
+        .get(verify(), subjectMatters.findByClassroom);
     app.route('/subjectMatters/:id')
-        .get(subjectMatters.find);
+        .get(verify(), subjectMatters.find);
     app.route('/subjectMatters')
-        .post(subjectMatters.store);
+        .post(verify(), subjectMatters.store);
     app.route('/subjectMatters/:id')
-        .put(subjectMatters.update);
+        .put(verify(), subjectMatters.update);
     app.route('/subjectMatters/:id')
-        .delete(subjectMatters.destroy);
+        .delete(verify(), subjectMatters.destroy);
 
     // routes classworks
     const classworks = require('./controller/classworks');
     app.route('/classworks')
-        .get(classworks.findall);
+        .get(verify(), classworks.findall);
+    app.route('/classworks/findBySubjectMatter/:subject_matter_id')
+        .get(verify(), classworks.findBySubjectMatter);
+    app.route('/classworks/findByStudentSubjectMatter/:student_id/:subject_matter_id')
+        .get(verify(), classworks.findBySubjectMatter);
     app.route('/classworks/:id')
-        .get(classworks.find);
+        .get(verify(), classworks.find);
     app.route('/classworks')
-        .post(classworks.store);
+        .post(verify(), classworks.store);
     app.route('/classworks/:id')
-        .put(classworks.update);
+        .put(verify(), classworks.update);
     app.route('/classworks/:id')
-        .delete(classworks.destroy);
+        .delete(verify(), classworks.destroy);
+
+    // routes schedule
+    const schedules = require('./controller/schedules');
+    app.route('/schedules')
+        .post(verify(), schedules.store);
+    app.route('/schedules/findByClass/:id')
+        .get(verify(), schedules.findByClass);
+    app.route('/schedules/findByTeacher/:id')
+        .get(schedules.findByTeacher);
+    app.route('/schedules/:id')
+        .delete(verify(), schedules.destroy);
+
+    // routes days
+    const days = require('./controller/days');
+    app.route('/days')
+        .get(verify(), days.findall);
+
+    // routes times
+    const times = require('./controller/times');
+    app.route('/times')
+        .get(verify(), times.findall);
 }
