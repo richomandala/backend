@@ -13,10 +13,10 @@ exports.findall = function (req, res) {
       if (err) {
         response.error(error.message, res)
       } else {
-        if (values.length) {
+        if (values.length > 0) {
           response.success(values, res);
         } else {
-          response.notfound(res);
+          response.notfound(res)
         }
       }
     }
@@ -34,10 +34,10 @@ exports.find = function (req, res) {
       if (err) {
         response.error(error.message, res)
       } else {
-        if (values.length) {
+        if (values.length > 0) {
           response.success(values[0], res);
         } else {
-          response.notfound(res);
+          response.notfound(res)
         }
       }
     }
@@ -57,9 +57,11 @@ exports.findBySubjectMatter = function (req, res) {
         response.error(error.message, res)
       } else {
         if (values.length) {
-          response.success(values, res);
-        } else {
-          response.notfound(res);
+          if (values.length > 0) {
+            response.success(values[0], res);
+          } else {
+            response.notfound(res)
+          }
         }
       }
     }
@@ -79,10 +81,10 @@ exports.findByStudentSubjectMatter = function (req, res) {
       if (err) {
         response.error(error.message, res)
       } else {
-        if (values.length) {
+        if (values.length > 0) {
           response.success(values[0], res);
         } else {
-          response.notfound(res);
+          response.notfound(res)
         }
       }
     }
