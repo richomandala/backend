@@ -61,6 +61,7 @@ exports.login = function (req, res) {
                                                         user_id: user.id,
                                                         student_id: values[0].id,
                                                         class_id: values[0].class_id,
+                                                        name: values[0].name,
                                                         username: user.username,
                                                         email: user.email
                                                     }
@@ -82,6 +83,7 @@ exports.login = function (req, res) {
                                                         role_id: user.role_id,
                                                         user_id: user.id,
                                                         teacher_id: values[0].id,
+                                                        name: values[0].name,
                                                         username: user.username,
                                                         email: user.email
                                                     }

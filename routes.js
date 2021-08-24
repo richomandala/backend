@@ -116,7 +116,7 @@ module.exports = function (app) {
     app.route('/classworks/findBySubjectMatter/:subject_matter_id')
         .get(verify(), classworks.findBySubjectMatter);
     app.route('/classworks/findByStudentSubjectMatter/:student_id/:subject_matter_id')
-        .get(verify(), classworks.findBySubjectMatter);
+        .get(verify(), classworks.findByStudentSubjectMatter);
     app.route('/classworks/:id')
         .get(verify(), classworks.find);
     app.route('/classworks')
@@ -132,8 +132,12 @@ module.exports = function (app) {
         .post(verify(), schedules.store);
     app.route('/schedules/findByClass/:id')
         .get(verify(), schedules.findByClass);
+    app.route('/schedules/getScheduleClass/:class_id')
+        .get(verify(), schedules.getScheduleClass);
     app.route('/schedules/findByTeacher/:id')
         .get(schedules.findByTeacher);
+    app.route('/schedules/getScheduleTeacher/:teacher_id')
+        .get(verify(), schedules.getScheduleTeacher);
     app.route('/schedules/:id')
         .delete(verify(), schedules.destroy);
 
@@ -146,4 +150,13 @@ module.exports = function (app) {
     const times = require('./controller/times');
     app.route('/times')
         .get(verify(), times.findall);
+
+    // routes chat
+    const roomchats = require('./controller/roomchats');
+    app.route('/roomchats/:classroom_id')
+        .get(verify(), roomchats.findall);
+    app.route('/roomchats/:classroom_id/:time')
+        .get(verify(), roomchats.findByTime);
+    app.route('/roomchats')
+        .post(verify(), roomchats.store);
 }
