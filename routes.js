@@ -159,4 +159,11 @@ module.exports = function (app) {
         .get(verify(), roomchats.findByTime);
     app.route('/roomchats')
         .post(verify(), roomchats.store);
+
+    // routes presences
+    const presences = require('./controller/presences');
+    app.route('/presences/:schedule_id/:user_id')
+        .get(verify(), presences.find);
+    app.route('/presences')
+        .post(verify(), presences.store);
 }
